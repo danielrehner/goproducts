@@ -1,0 +1,119 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample for using Go, DynamoDB, and CloudSearch",
+        "title": "GoProducts Example Project",
+        "contact": {
+            "name": "Daniel Rehner",
+            "url": "http://www.twitter.com/danielrehner",
+            "email": "daniel.rehner@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/products/scan": {
+            "get": {
+                "description": "Uses DynamoDB to find products by Title",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Scans for products using DynamoDB",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search Term",
+                        "name": "q",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/dto.ProductSearchResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/search": {
+            "get": {
+                "description": "Uses CloudSearch to find products by Title",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Searches for products using CloudSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search Term",
+                        "name": "q",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/dto.ProductSearchResult"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.Product": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 8.27
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Cookies"
+                }
+            }
+        },
+        "dto.ProductResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/dto.Product"
+                }
+            }
+        },
+        "dto.ProductSearchResult": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Product"
+                    }
+                }
+            }
+        }
+    }
+}

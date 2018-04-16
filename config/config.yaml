@@ -1,7 +1,10 @@
+data:
+  productsFile: products.csv
 dynamodb:
   productsTableName: GoApp.ProductsTest
+  endpoint:
 cloudsearch:
-  endpoint: no-endpoing.us-west-1.cloudsearch.amazonaws.com
+  endpoint: no-endpoint.us-west-1.cloudsearch.amazonaws.com
 aws:
   region: us-west-1
   credentials_file_path: nofile 

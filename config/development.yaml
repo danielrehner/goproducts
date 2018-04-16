@@ -1,5 +1,8 @@
+data:
+  productsFile: products.csv
 dynamodb:
   productsTableName: GoApp.Products
+  endpoint:
 cloudsearch:
   endpoint: search-goproducts-domain-kg3aqdlqa7sttwc2e5vobmhkki.us-west-2.cloudsearch.amazonaws.com
 aws:

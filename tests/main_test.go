@@ -42,6 +42,20 @@ func TestPing(t *testing.T) {
 	assert.Equal(t, body["message"], value)
 }
 
+func TestShowProduct(t *testing.T) {
+	assert.Nil(t, nil)
+	response := doGetRequest(t, "/api/v1/products/show/1")
+	assert.NotNil(t, response)
+	var responseProduct dto.ProductResponse
+	err := json.Unmarshal([]byte(response.Body.String()), &responseProduct)
+	assert.Nil(t, err)
+	product := responseProduct.Data
+	assert.NotNil(t, product)
+	assert.Equal(t, "1", product.ID)
+	assert.Equal(t, "Cookies", product.Title)
+	assert.Equal(t, 1.00, product.Price)
+}
+
 func TestProductScan(t *testing.T) {
 	response := doProductScan(t, "Cookies")
 	product := response[0]
@@ -85,6 +99,19 @@ func doGetRequest(t *testing.T, path string) *httptest.ResponseRecorder {
 					},
 				},
 			},
+			GetResp: dynamodb.GetItemOutput{
+				Item: map[string]*dynamodb.AttributeValue{
+					"ID": {
+						S: aws.String("1"),
+					},
+					"Title": {
+						S: aws.String("Cookies"),
+					},
+					"Price": {
+						N: aws.String("1.00"),
+					},
+				},
+			},
 		},
 	}
 	dbsearch := &database.Search{
@@ -119,7 +146,7 @@ func parseSimpleJSONResponse(t *testing.T, w *httptest.ResponseRecorder) map[str
 }
 
 func doProductScan(t *testing.T, searchTerm string) []dto.Product {
-	w := doGetRequest(t, "/products/scan?q="+searchTerm)
+	w := doGetRequest(t, "/api/v1/products/scan?q="+searchTerm)
 	var response map[string][]dto.Product
 	err := json.Unmarshal([]byte(w.Body.String()), &response)
 	assert.Nil(t, err)
@@ -130,7 +157,7 @@ func doProductScan(t *testing.T, searchTerm string) []dto.Product {
 }
 
 func doProductSearch(t *testing.T, searchTerm string) []dto.Product {
-	w := doGetRequest(t, "/products/search?q="+searchTerm)
+	w := doGetRequest(t, "/api/v1/products/search?q="+searchTerm)
 	var response map[string][]dto.Product
 	err := json.Unmarshal([]byte(w.Body.String()), &response)
 	assert.Nil(t, err)

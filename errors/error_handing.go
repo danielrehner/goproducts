@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// HandleIfError takes care of an error if not nil.
+// HandleIfError performs standard error handling logic if the error is not nil.
 // The intent here is to centralize error handling and DRY up the code a bit.
 func HandleIfError(errorToHandle error) {
 	if errorToHandle == nil {

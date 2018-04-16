@@ -1,0 +1,80 @@
+basePath: /api/v1
+definitions:
+  dto.Product:
+    properties:
+      id:
+        example: "1"
+        type: string
+      price:
+        example: 8.27
+        type: number
+      title:
+        example: Cookies
+        type: string
+    type: object
+  dto.ProductResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.Product'
+        type: object
+    type: object
+  dto.ProductSearchResult:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.Product'
+        type: array
+    type: object
+info:
+  contact:
+    email: daniel.rehner@gmail.com
+    name: Daniel Rehner
+    url: http://www.twitter.com/danielrehner
+  description: This is a sample for using Go, DynamoDB, and CloudSearch
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: GoProducts Example Project
+  version: "1.0"
+paths:
+  /products/scan:
+    get:
+      consumes:
+      - application/json
+      description: Uses DynamoDB to find products by Title
+      parameters:
+      - description: Search Term
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductSearchResult'
+            type: object
+      summary: Scans for products using DynamoDB
+  /products/search:
+    get:
+      consumes:
+      - application/json
+      description: Uses CloudSearch to find products by Title
+      parameters:
+      - description: Search Term
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductSearchResult'
+            type: object
+      summary: Searches for products using CloudSearch
+swagger: "2.0"

@@ -16,28 +16,30 @@ var svc *dynamodb.DynamoDB
 var searchClient *cloudsearchdomain.CloudSearchDomain
 var sess *session.Session
 
-// DB struct to enable data access and mocking for tests
+// DB struct enables data access and allows mocking for tests.
 type DB struct {
 	Client dynamodbiface.DynamoDBAPI
 }
 
-// Search struct to enable search access and mocking for tests
+// Search struct enables search access and allows mocking for tests.
 type Search struct {
 	Client cloudsearchdomainiface.CloudSearchDomainAPI
 }
 
-// GetClient provides a dynamodb client
+// GetClient provides a dynamodb client.
 func GetClient() dynamodbiface.DynamoDBAPI {
 	if svc != nil {
 		return svc
 	}
 
-	svc = dynamodb.New(GetSession())
+	svc = dynamodb.New(GetSession(), &aws.Config{
+		Endpoint: aws.String(config.GetString("dynamodb.endpoint")),
+	})
 
 	return svc
 }
 
-// GetSearchClient provides a search client for CloudSearch
+// GetSearchClient provides a search client for CloudSearch.
 func GetSearchClient() cloudsearchdomainiface.CloudSearchDomainAPI {
 	if searchClient != nil {
 		return searchClient
@@ -50,7 +52,7 @@ func GetSearchClient() cloudsearchdomainiface.CloudSearchDomainAPI {
 	return searchClient
 }
 
-// GetSession provides a session
+// GetSession provides an AWS session.
 func GetSession() *session.Session {
 	if sess != nil {
 		return sess

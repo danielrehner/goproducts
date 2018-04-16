@@ -9,7 +9,12 @@ import (
 
 type mockedScanOutput struct {
 	dynamodbiface.DynamoDBAPI
-	Resp dynamodb.ScanOutput
+	Resp    dynamodb.ScanOutput
+	GetResp dynamodb.GetItemOutput
+}
+
+func (m mockedScanOutput) GetItem(input *dynamodb.GetItemInput) (*dynamodb.GetItemOutput, error) {
+	return &m.GetResp, nil
 }
 
 func (m mockedScanOutput) Scan(input *dynamodb.ScanInput) (*dynamodb.ScanOutput, error) {

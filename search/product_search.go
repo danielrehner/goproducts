@@ -16,15 +16,39 @@ import (
 	"github.com/goproducts/errors"
 )
 
-// ProductScan scans product documents for matches
+// ShowProduct retrieves the details for a given product.
+func ShowProduct(svc *database.DB, id string) (dto.Product, error) {
+	retrievedProduct := dto.Product{}
+	getItemResult, err := svc.Client.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(config.GetString("dynamodb.productsTableName")),
+		Key: map[string]*dynamodb.AttributeValue{
+			"id": {
+				S: aws.String(id),
+			},
+		},
+	})
+
+	if err != nil {
+		return retrievedProduct, err
+	}
+
+	err = dynamodbattribute.UnmarshalMap(getItemResult.Item, &retrievedProduct)
+	if err != nil {
+		return retrievedProduct, err
+	}
+
+	return retrievedProduct, nil
+}
+
+// ProductScan scans product documents for matches.
 func ProductScan(svc *database.DB, searchTerm string) []dto.Product {
 
-	filt := expression.Name("Title").Contains(searchTerm)
+	filt := expression.Name("title").Contains(searchTerm)
 
 	proj := expression.NamesList(
-		expression.Name("ID"),
-		expression.Name("Title"),
-		expression.Name("Price"),
+		expression.Name("id"),
+		expression.Name("title"),
+		expression.Name("price"),
 	)
 
 	expr, err := expression.NewBuilder().WithFilter(filt).WithProjection(proj).Build()
@@ -57,7 +81,7 @@ func ProductScan(svc *database.DB, searchTerm string) []dto.Product {
 	return products
 }
 
-// ProductSearch searches products for matches
+// ProductSearch searches products for matches.
 func ProductSearch(search *database.Search, searchTerm string) []dto.Product {
 	params := &cloudsearchdomain.SearchInput{
 		Query: aws.String(searchTerm),

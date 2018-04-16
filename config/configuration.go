@@ -29,7 +29,7 @@ func GetConfiguration() *viper.Viper {
 	return configuration
 }
 
-// GetString retrieves a string configuration value
+// GetString retrieves a string configuration value.
 func GetString(configValue string) string {
 	return GetConfiguration().GetString(configValue)
 }
