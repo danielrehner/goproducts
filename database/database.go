@@ -8,6 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/cloudsearchdomain/cloudsearchdomainiface"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
+	"github.com/goproducts/config"
+	"github.com/goproducts/errors"
 )
 
 var svc *dynamodb.DynamoDB
@@ -26,31 +28,40 @@ type Search struct {
 
 // GetClient provides a dynamodb client
 func GetClient() dynamodbiface.DynamoDBAPI {
-	if svc == nil {
-		svc = dynamodb.New(GetSession())
+	if svc != nil {
+		return svc
 	}
+
+	svc = dynamodb.New(GetSession())
+
 	return svc
 }
 
 // GetSearchClient provides a search client for CloudSearch
 func GetSearchClient() cloudsearchdomainiface.CloudSearchDomainAPI {
-	if searchClient == nil {
-		searchClient = cloudsearchdomain.New(GetSession(), &aws.Config{
-			Endpoint: aws.String("search-goproducts-domain-kg3aqdlqa7sttwc2e5vobmhkki.us-west-2.cloudsearch.amazonaws.com"),
-		})
+	if searchClient != nil {
+		return searchClient
 	}
+
+	searchClient = cloudsearchdomain.New(GetSession(), &aws.Config{
+		Endpoint: aws.String(config.GetString("cloudsearch.endpoint")),
+	})
+
 	return searchClient
 }
 
 // GetSession provides a session
 func GetSession() *session.Session {
-	if sess == nil {
-		creds := credentials.NewSharedCredentials("/Users/rehnerd/.aws/credentials", "default")
-		sess, _ = session.NewSession(&aws.Config{Region: aws.String("us-west-2"),
-			Credentials: creds,
-		},
-		)
+	if sess != nil {
+		return sess
 	}
+
+	creds := credentials.NewSharedCredentials(config.GetString("aws.credentials_file_path"), config.GetString("aws.credentials_name"))
+	sess, err := session.NewSession(&aws.Config{
+		Region:      aws.String(config.GetString("aws.region")),
+		Credentials: creds,
+	})
+	errors.HandleIfError(err)
 
 	return sess
 }

@@ -1,8 +1,6 @@
 package search
 
 import (
-	"fmt"
-	"os"
 	"sort"
 	"strconv"
 
@@ -12,8 +10,10 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
+	"github.com/goproducts/config"
 	"github.com/goproducts/database"
 	"github.com/goproducts/dto"
+	"github.com/goproducts/errors"
 )
 
 // ProductScan scans product documents for matches
@@ -28,39 +28,24 @@ func ProductScan(svc *database.DB, searchTerm string) []dto.Product {
 	)
 
 	expr, err := expression.NewBuilder().WithFilter(filt).WithProjection(proj).Build()
-
-	if err != nil {
-		fmt.Println("Got error building expression:")
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
+	errors.HandleIfError(err)
 
 	params := &dynamodb.ScanInput{
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
 		FilterExpression:          expr.Filter(),
 		ProjectionExpression:      expr.Projection(),
-		TableName:                 aws.String("GoApp.Products"),
+		TableName:                 aws.String(config.GetString("dynamodb.productsTableName")),
 	}
 
 	result, err := svc.Client.Scan(params)
+	errors.HandleIfError(err)
 
-	if err != nil {
-		fmt.Println("Query Error:")
-		fmt.Println((err.Error()))
-		os.Exit(1)
-	}
 	products := []dto.Product{}
 	for _, i := range result.Items {
 		item := dto.Product{}
-
 		err = dynamodbattribute.UnmarshalMap(i, &item)
-
-		if err != nil {
-			fmt.Println("UnmarshalMap Error:")
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
+		errors.HandleIfError(err)
 
 		products = append(products, item)
 	}
@@ -79,16 +64,12 @@ func ProductSearch(search *database.Search, searchTerm string) []dto.Product {
 		Sort:  aws.String("price desc"),
 	}
 	result, err := search.Client.Search(params)
-
-	if err != nil {
-		fmt.Println("Query Error:")
-		fmt.Println((err.Error()))
-		os.Exit(1)
-	}
+	errors.HandleIfError(err)
 
 	products := []dto.Product{}
 	for _, i := range result.Hits.Hit {
-		price, _ := strconv.ParseFloat(*i.Fields["price"][0], 64)
+		price, err := strconv.ParseFloat(*i.Fields["price"][0], 64)
+		errors.HandleIfError(err)
 		item := dto.Product{
 			ID:    *i.Id,
 			Title: *i.Fields["title"][0],

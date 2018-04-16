@@ -2,20 +2,21 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/goproducts/config"
 	"github.com/goproducts/database"
 	"github.com/goproducts/dto"
+	"github.com/goproducts/errors"
 )
 
 func setupData(svc *database.DB) {
 	result, _ := svc.Client.ListTables(&dynamodb.ListTablesInput{})
 	tableNames := result.TableNames
-	for !contains(tableNames, "GoApp.Products") {
+	for !contains(tableNames, config.GetString("dynamodb.productsTableName")) {
 		createTable(svc)
 		result, _ := svc.Client.ListTables(&dynamodb.ListTablesInput{})
 		tableNames = result.TableNames
@@ -29,7 +30,7 @@ func setupData(svc *database.DB) {
 func createTable(svc *database.DB) {
 
 	createTableInput := &dynamodb.CreateTableInput{
-		TableName: aws.String("GoApp.Products"),
+		TableName: aws.String(config.GetString("dynamodb.productsTableName")),
 		AttributeDefinitions: []*dynamodb.AttributeDefinition{
 			{
 				AttributeName: aws.String("ID"),
@@ -48,16 +49,10 @@ func createTable(svc *database.DB) {
 		},
 	}
 
-	var err error
-	_, err = svc.Client.CreateTable(createTableInput)
+	_, err := svc.Client.CreateTable(createTableInput)
+	errors.HandleIfError(err)
 
-	if err != nil {
-		fmt.Println("Error on CreateTable:")
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-
-	fmt.Println("Created Table GoApp.Products")
+	fmt.Println("Created Table " + config.GetString("dynamodb.productsTableName"))
 }
 
 func populateTable(svc *database.DB) {
@@ -67,52 +62,34 @@ func populateTable(svc *database.DB) {
 	}
 	for _, product := range products {
 		av, err := dynamodbattribute.MarshalMap(product)
-
-		if err != nil {
-			fmt.Println("MarshalMap Error:")
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
+		errors.HandleIfError(err)
 
 		input := &dynamodb.PutItemInput{
 			Item:      av,
-			TableName: aws.String("GoApp.Products"),
+			TableName: aws.String(config.GetString("dynamodb.productsTableName")),
 		}
 
 		_, err = svc.Client.PutItem(input)
-
-		if err != nil {
-			fmt.Println("Got error calling PutItem:")
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
-
-		fmt.Println("Put product in GoApp.Products: " + product.Title)
+		errors.HandleIfError(err)
+		fmt.Println("Put product: " + product.Title)
 	}
 }
 
 func verifyData(svc *database.DB) {
 	getItemResult, err := svc.Client.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String("GoApp.Products"),
+		TableName: aws.String(config.GetString("dynamodb.productsTableName")),
 		Key: map[string]*dynamodb.AttributeValue{
 			"ID": {
 				S: aws.String("1"),
 			},
 		},
 	})
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	errors.HandleIfError(err)
 
 	retrievedProduct := dto.Product{}
 
 	err = dynamodbattribute.UnmarshalMap(getItemResult.Item, &retrievedProduct)
-
-	if err != nil {
-		panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
-	}
+	errors.HandleIfError(err)
 
 	if retrievedProduct.Title == "" {
 		fmt.Println("Could not find Product 1")

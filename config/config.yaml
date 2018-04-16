@@ -1,0 +1,8 @@
+dynamodb:
+  productsTableName: GoApp.ProductsTest
+cloudsearch:
+  endpoint: no-endpoing.us-west-1.cloudsearch.amazonaws.com
+aws:
+  region: us-west-1
+  credentials_file_path: nofile 
+  credentials_name: default
