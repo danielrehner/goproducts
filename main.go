@@ -8,6 +8,7 @@ import (
 
 var r *gin.Engine
 var db *database.DB
+var search *database.Search
 
 func main() {
 	db := &database.DB{
