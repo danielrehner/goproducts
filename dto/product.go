@@ -2,8 +2,7 @@ package dto
 
 // Product struct to hold information about products
 type Product struct {
-	ID string
-	//StoreID string
+	ID    string
 	Title string
 	Price float64
 }

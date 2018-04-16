@@ -36,21 +36,11 @@ func ProductScan(svc *database.DB, searchTerm string) []dto.Product {
 	}
 
 	params := &dynamodb.ScanInput{
-		//KeyConditionExpression: aws.String("contains(Title, :title)"),
-
-		// ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-		// 	":title": {
-		// 		S: aws.String(searchTerm),
-		// 	},
-		// },
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
 		FilterExpression:          expr.Filter(),
 		ProjectionExpression:      expr.Projection(),
 		TableName:                 aws.String("GoApp.Products"),
-		//IndexName:                 aws.String("ProductPrice"),
-		//TableName:        aws.String("ProductPrice"),
-		//ScanIndexForward: aws.Bool(false),
 	}
 
 	result, err := svc.Client.Scan(params)
@@ -78,9 +68,6 @@ func ProductScan(svc *database.DB, searchTerm string) []dto.Product {
 	sort.Slice(products, func(i, j int) bool {
 		return products[i].Price > products[j].Price
 	})
-	//for _, i := range products {
-	//	fmt.Println("Query Found: " + i.Title)
-	//}
 
 	return products
 }

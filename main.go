@@ -20,9 +20,7 @@ func main() {
 	r := server.SetupRouter(db, search)
 	r.Run()
 
-	// - Use go aws sdk or cli or cloudformation template file? both?
-	// Scrape / find online sample data?
-	// [x] Sort by price, descending by default
+	// Sort by price, descending by default
 	// Hook up CloudSearch
 	// DAX?
 	// Add tests

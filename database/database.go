@@ -47,7 +47,6 @@ func GetSession() *session.Session {
 	if sess == nil {
 		creds := credentials.NewSharedCredentials("/Users/rehnerd/.aws/credentials", "default")
 		sess, _ = session.NewSession(&aws.Config{Region: aws.String("us-west-2"),
-			//Endpoint: aws.String("http://localhost:8000")
 			Credentials: creds,
 		},
 		)

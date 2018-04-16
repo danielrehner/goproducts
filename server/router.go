@@ -8,7 +8,7 @@ import (
 	"github.com/goproducts/search"
 )
 
-// SetupRouter - initialize Gin router and routes
+// SetupRouter initializes Gin router and routes
 func SetupRouter(db *database.DB, dbsearch *database.Search) *gin.Engine {
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
