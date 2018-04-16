@@ -130,11 +130,6 @@ func verifyData(svc *database.DB) {
 		fmt.Println("Could not find Product 1")
 		return
 	}
-
-	fmt.Println("Found product:")
-	fmt.Println("Title:  ", retrievedProduct.Title)
-	fmt.Println("ID: ", retrievedProduct.ID)
-	fmt.Println("Price:  ", retrievedProduct.Price)
 }
 
 // contains returns true if the name is found in aRange and returns false otherwise.

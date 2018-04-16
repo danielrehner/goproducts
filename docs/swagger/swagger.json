@@ -75,6 +75,36 @@
                     }
                 }
             }
+        },
+        "/products/show/": {
+            "get": {
+                "description": "Uses DynamoDB to retrieve details for a given product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Shows the details of a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/dto.ProductResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

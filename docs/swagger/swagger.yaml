@@ -77,4 +77,24 @@ paths:
             $ref: '#/definitions/dto.ProductSearchResult'
             type: object
       summary: Searches for products using CloudSearch
+  /products/show/:
+    get:
+      consumes:
+      - application/json
+      description: Uses DynamoDB to retrieve details for a given product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductResponse'
+            type: object
+      summary: Shows the details of a product
 swagger: "2.0"

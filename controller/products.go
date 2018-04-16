@@ -16,7 +16,7 @@ import (
 // @Produce  json
 // @Param id path string true "Product ID"
 // @Success 200 {object} dto.ProductResponse
-// @Router /products/search?q={q} [get]
+// @Router /products/show/:id [get]
 func (c *Controller) ShowProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 
