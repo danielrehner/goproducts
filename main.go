@@ -19,12 +19,4 @@ func main() {
 	setupData(db)
 	r := server.SetupRouter(db, search)
 	r.Run()
-
-	// Sort by price, descending by default
-	// Hook up CloudSearch
-	// DAX?
-	// Add tests
-	// Add benchmark tests?
-	// Add example tests?
-
 }

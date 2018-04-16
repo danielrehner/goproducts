@@ -76,6 +76,7 @@ func ProductScan(svc *database.DB, searchTerm string) []dto.Product {
 func ProductSearch(search *database.Search, searchTerm string) []dto.Product {
 	params := &cloudsearchdomain.SearchInput{
 		Query: aws.String(searchTerm),
+		Sort:  aws.String("price desc"),
 	}
 	result, err := search.Client.Search(params)
 
