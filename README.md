@@ -31,5 +31,4 @@ Info on the API definition can be found in [docs/swagger/swagger.json](docs/swag
 I really enjoyed this project and learned a lot in the process. Thank you in advance to the people who will take time out of their lives to review this sample code. It means a lot to me.
 
 ### Contact
-If you have any questions, improvement ideas, or just want to go get some chinese takeout and chat, please feel free to reach out:
-<daniel.rehner@gmail.com>
+If you have any questions, improvement ideas, or just want to go get some chinese takeout and chat, please feel free to reach out.
