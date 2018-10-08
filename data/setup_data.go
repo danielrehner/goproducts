@@ -1,4 +1,4 @@
-package main
+package data
 
 import (
 	"bufio"
@@ -20,7 +20,7 @@ import (
 )
 
 // setupData creates the products table, populates it with an initial data set, and makes sure a product is present.
-func setupData(svc *database.DB) {
+func SetupData(svc *database.DB) {
 	result, _ := svc.Client.ListTables(&dynamodb.ListTablesInput{})
 	tableNames := result.TableNames
 

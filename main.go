@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/goproducts/config"
+	"github.com/goproducts/data"
 	"github.com/goproducts/database"
 	_ "github.com/goproducts/docs"
 	"github.com/goproducts/server"
@@ -37,7 +38,7 @@ func main() {
 		Client: database.GetSearchClient(),
 	}
 
-	setupData(db)
+	data.SetupData(db)
 	r := server.SetupRouter(db, search)
 
 	r.Run()
