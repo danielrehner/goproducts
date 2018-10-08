@@ -4,7 +4,7 @@ dynamodb:
   productsTableName: GoApp.ProductsTest
   endpoint:
 cloudsearch:
-  endpoint: no-endpoint.us-west-1.cloudsearch.amazonaws.com
+  endpoint:
 aws:
   region: us-west-1
   credentials_file_path: nofile 

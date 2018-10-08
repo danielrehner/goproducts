@@ -4,8 +4,8 @@ dynamodb:
   productsTableName: GoApp.Products
   endpoint:
 cloudsearch:
-  endpoint: search-goproducts-domain-kg3aqdlqa7sttwc2e5vobmhkki.us-west-2.cloudsearch.amazonaws.com
+  endpoint:
 aws:
   region: us-west-2
-  credentials_file_path: /Users/rehnerd/.aws/credentials
+  credentials_file_path:
   credentials_name: default
