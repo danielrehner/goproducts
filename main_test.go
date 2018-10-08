@@ -1,4 +1,4 @@
-package tests
+package main
 
 import (
 	"encoding/json"
@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/goproducts/database"
 	"github.com/goproducts/dto"
+	"github.com/goproducts/mocks"
 	"github.com/goproducts/server"
 	"github.com/stretchr/testify/assert"
 )
@@ -82,7 +83,7 @@ func doRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {
 
 func doGetRequest(t *testing.T, path string) *httptest.ResponseRecorder {
 	db := &database.DB{
-		Client: mockedScanOutput{
+		Client: mocks.MockedScanOutput{
 			Resp: dynamodb.ScanOutput{
 				Count: aws.Int64(1),
 				Items: []map[string]*dynamodb.AttributeValue{
@@ -115,7 +116,7 @@ func doGetRequest(t *testing.T, path string) *httptest.ResponseRecorder {
 		},
 	}
 	dbsearch := &database.Search{
-		Client: mockedSearchOutput{
+		Client: mocks.MockedSearchOutput{
 			Resp: cloudsearchdomain.SearchOutput{
 				Hits: &cloudsearchdomain.Hits{
 					Hit: []*cloudsearchdomain.Hit{
